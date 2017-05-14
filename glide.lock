@@ -1,6 +1,8 @@
-hash: 6f157fd1a50518dc7aa73cdaa0243096cc10baadb687e9675c2b6b1da6ed2093
-updated: 2017-05-11T23:23:35.888233024-03:00
+hash: e079fb717e449231a8282cb82a885fe09a68ca43b7625f62cfee69fe3ffad864
+updated: 2017-05-14T02:19:57.291520191-03:00
 imports:
+- name: github.com/gorilla/websocket
+  version: 3ab3a8b8831546bd18fd182c20687ca853b2bb13
 - name: github.com/jessevdk/go-flags
   version: 48cf8722c3375517aba351d1f7577c40663a4407
 testImports: []

@@ -8,7 +8,8 @@ import (
 	"github.com/gorilla/websocket"
 )
 
-type wsClient struct {
+//WebsocketClient This struct is used for holding the main method for the agent
+type WebsocketClient struct {
 	conn *websocket.Conn
 	host string
 	path string
@@ -19,13 +20,17 @@ type wsHandshake struct {
 	Ready bool
 }
 
-//New Returns a new instance of wsClient
-func New() *wsClient {
-	return &wsClient{}
+//New Returns a new instance of WebsocketClient
+func New() *WebsocketClient {
+	return &WebsocketClient{}
 }
 
-//Setup Configures a wsClient instance
-func (ws *wsClient) Setup(host string, path string, tags []string) {
+//Setup Configures a WebsocketClient instance
+func (ws *WebsocketClient) Setup(
+	host string,
+	path string,
+	tags []string,
+    handlerMap map) {
 	ws.host = host
 	ws.path = path
 	ws.tags = tags
@@ -34,7 +39,7 @@ func (ws *wsClient) Setup(host string, path string, tags []string) {
 	ws.sendHandshake()
 }
 
-func (ws *wsClient) connect() {
+func (ws *WebsocketClient) connect() {
 	u := url.URL{Scheme: "ws", Host: ws.host, Path: ws.path}
 
 	start := time.Now()
@@ -49,27 +54,45 @@ func (ws *wsClient) connect() {
 	ws.conn = WSConnection
 }
 
-// func (ws *wsClient) closeConnHandler() func(code int, text string) error {
+// func (ws *WebsocketClient) closeConnHandler() func(code int, text string) error {
 // 	return ws.conn.handleClose
 // }
 
-func (ws *wsClient) writeJSON(data interface{}) {
+func (ws *WebsocketClient) writeJSON(data interface{}) {
 	ws.conn.WriteJSON(data)
 }
 
-func (ws *wsClient) readMessage() (int, []byte, error) {
+func (ws *WebsocketClient) readJSON(data interface{}) error {
+	return ws.conn.ReadJSON(data)
+}
+
+func (ws *WebsocketClient) readMessage() (int, []byte, error) {
 	return ws.conn.ReadMessage()
 }
 
-func (ws *wsClient) sendHandshake() {
+func (ws *WebsocketClient) sendHandshake() {
 	log.Println("Sending initial message.")
 	ws.writeJSON(wsHandshake{Ready: true})
 	log.Println("Message sent.")
 }
 
-// func (ws *wsClient) run() {
-// 	log.Println("Starting to listening for messages from the server.")
-// 	for {
-// 		msgType, msgData, msgErr := ws.readMessage()
-// 	}
-// }
+func (ws *WebsocketClient) handleMessage(message map[string]string) error {
+
+}
+
+func (ws *WebsocketClient) run() error {
+	log.Println("Starting to listening for messages from the server.")
+	for {
+		message := make(map[string]string)
+
+		if err := ws.readJSON(message); err != nil {
+			log.Println("Got error reading the message: ", err)
+			return err
+		}
+
+		if err := ws.handleMessage(message); err != nil {
+			log.Println("Got error processing the message: ", err)
+			return err
+		}
+	}
+}

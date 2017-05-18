@@ -5,13 +5,33 @@ import (
 	"time"
 )
 
-func HttpProbe(config ProbeConfig) (uint8, error, *http.Response) {
-	// https://medium.com/@nate510/don-t-use-go-s-default-http-client-4804cb19f779
-	var netClient = &http.Client{Timeout: config.GetTimeout()}
+//Client Interface to help testing http requests
+type Client interface {
+	Get(string) (*http.Response, error)
+}
 
+//HttpProbe Struct for the HttpProbe
+type HttpProbe struct {
+	config     ProbeConfig
+	httpClient Client
+}
+
+func (probe *HttpProbe) Execute() (uint8, error) {
 	startTime := time.Now()
-	response, err := netClient.Get(config.GetTarget())
+	_, err := probe.httpClient.Get(probe.config.Target)
 	duration := uint8(time.Now().Sub(startTime) / time.Nanosecond)
 
-	return duration, err, response
+	return duration, err
+}
+
+func New(config ProbeConfig) *HttpProbe {
+	// https://medium.com/@nate510/don-t-use-go-s-default-http-client-4804cb19f779
+	var client = &http.Client{Timeout: config.Timeout}
+
+	httpProbe := HttpProbe{
+		httpClient: client,
+		config:     config,
+	}
+
+	return &httpProbe
 }

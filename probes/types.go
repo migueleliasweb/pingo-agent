@@ -2,20 +2,13 @@ package probes
 
 import "time"
 
-type IProbeConfig interface {
-	GetTarget() string
-	GetTimeout() time.Duration
+//Probe Interface for all Probes
+type Probe interface {
+	Execute() (uint8, error)
 }
 
+//ProbeConfig Configuration for all Probes
 type ProbeConfig struct {
 	Target  string
 	Timeout time.Duration
-}
-
-func (c *ProbeConfig) GetTarget() string {
-	return c.Target
-}
-
-func (c *ProbeConfig) GetTimeout() time.Duration {
-	return time.Duration(c.Timeout) * time.Second
 }

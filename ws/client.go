@@ -9,6 +9,9 @@ import (
 	"github.com/migueleliasweb/pingo-agent/probes"
 )
 
+type Dialer interface {
+}
+
 //WebsocketClient This struct is used for holding the main method for the agent
 type WebsocketClient struct {
 	dialer

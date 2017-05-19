@@ -5,19 +5,26 @@ import (
 	"time"
 )
 
-func TcpCheck(config ProbeConfig) (uint8, error) {
+//TCPProbe Struct for probing TCP
+type TCPProbe struct {
+	DialTimeout func(string, string, time.Duration) (net.Conn, error)
+	config      ProbeConfig
+}
+
+//Execute Executes TCP probing
+func (probe *TCPProbe) Execute() (uint8, error) {
 	startTime := time.Now()
-	conn, err := net.DialTimeout(
+	conn, err := probe.DialTimeout(
 		"tcp",
-		config.GetTarget(),
-		config.GetTimeout(),
+		probe.config.Target,
+		probe.config.Timeout,
 	)
 
 	if err != nil {
 		return uint8(0), err
 	}
 
-	duration := uint8(time.Now().Sub(startTime) / time.Nanosecond)
+	duration := uint8(time.Since(startTime) / time.Nanosecond)
 	conn.Close()
 
 	return duration, err

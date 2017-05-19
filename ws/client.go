@@ -6,17 +6,19 @@ import (
 	"time"
 
 	"github.com/gorilla/websocket"
+	"github.com/migueleliasweb/pingo-agent/probes"
 )
 
 //WebsocketClient This struct is used for holding the main method for the agent
 type WebsocketClient struct {
+	dialer
 	conn *websocket.Conn
 	host string
 	path string
 	tags []string
 }
 
-type wsHandshake struct {
+type Handshake struct {
 	Ready bool
 }
 
@@ -30,7 +32,7 @@ func (ws *WebsocketClient) Setup(
 	host string,
 	path string,
 	tags []string,
-    handlerMap map) {
+	probes map[string]probes.Probe) {
 	ws.host = host
 	ws.path = path
 	ws.tags = tags
@@ -77,7 +79,7 @@ func (ws *WebsocketClient) sendHandshake() {
 }
 
 func (ws *WebsocketClient) handleMessage(message map[string]string) error {
-
+	return nil
 }
 
 func (ws *WebsocketClient) run() error {

@@ -10,7 +10,7 @@ func main() {
 	tags[0] = "foo"
 	tags[1] = "bar"
 
-    handlerMap := make(map[string]string)
+    handlerMap := make(map[string]Probe)
     handlerMap["dns"] = probes.DnsProbe
     handlerMap["http"] = probes.HttpProbe
     handlerMap["tcp"] = probes.TcpCheck

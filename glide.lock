@@ -1,8 +1,39 @@
-hash: e079fb717e449231a8282cb82a885fe09a68ca43b7625f62cfee69fe3ffad864
-updated: 2017-05-14T02:19:57.291520191-03:00
+hash: fc3fff077cafb9c8f6b07993bfd86f297f5fc745acc9c4a883298f253830c12b
+updated: 2017-07-02T02:40:42.13276878-03:00
 imports:
+- name: github.com/dgrijalva/jwt-go
+  version: d2709f9f1f31ebcda9651b03077758c1f3a0018c
+- name: github.com/garyburd/redigo
+  version: 433969511232c397de61b1442f9fd49ec06ae9ba
+  subpackages:
+  - internal
+  - redis
 - name: github.com/gorilla/websocket
   version: 3ab3a8b8831546bd18fd182c20687ca853b2bb13
-- name: github.com/jessevdk/go-flags
-  version: 48cf8722c3375517aba351d1f7577c40663a4407
+- name: github.com/labstack/echo
+  version: 935a60782cbbc55110e7bd4b33120e4567cbee43
+- name: github.com/labstack/gommon
+  version: 1121fd3e243c202482226a7afe4dcd07ffc4139a
+  subpackages:
+  - color
+  - log
+- name: github.com/mattn/go-colorable
+  version: 941b50ebc6efddf4c41c8e4537a5f68a4e686b24
+- name: github.com/mattn/go-isatty
+  version: fc9e8d8ef48496124e79ae0df75490096eccf6fe
+- name: github.com/sirupsen/logrus
+  version: 202f25545ea4cf9b191ff7f846df5d87c9382c2b
+- name: github.com/valyala/bytebufferpool
+  version: e746df99fe4a3986f4d4f79e13c1e0117ce9c2f7
+- name: github.com/valyala/fasttemplate
+  version: dcecefd839c4193db0d35b88ec65b4c12d360ab0
+- name: golang.org/x/crypto
+  version: 5ef0053f77724838734b6945dd364d3847e5de1d
+  subpackages:
+  - acme
+  - acme/autocert
+- name: golang.org/x/sys
+  version: 4ed4d404df456f81e878683a0363ed3013a59003
+  subpackages:
+  - unix
 testImports: []

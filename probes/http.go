@@ -5,15 +5,14 @@ import (
 	"time"
 )
 
-//Client Interface to help testing http requests
-type Client interface {
+type client interface {
 	Get(string) (*http.Response, error)
 }
 
 //HTTPProbe Struct for the HTTPProbe
 type HTTPProbe struct {
 	config     ProbeConfig
-	httpClient Client
+	httpClient client
 }
 
 //Execute Executes HTTPProbe

@@ -1,6 +1,11 @@
-package: .
+package: github.com/migueleliasweb/pingo-agent
 import:
-- package: github.com/jessevdk/go-flags
-  version: v1.2.0
 - package: github.com/gorilla/websocket
+- package: github.com/garyburd/redigo
   version: v1.1.0
+- package: github.com/sirupsen/logrus
+  version: v1.0.0
+- package: github.com/labstack/echo
+  version: v3.2.1
+- package: github.com/dgrijalva/jwt-go
+  version: v3.0.0

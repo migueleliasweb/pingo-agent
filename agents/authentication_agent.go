@@ -2,7 +2,6 @@ package agents
 
 import (
 	"context"
-	"net/http"
 	"strings"
 	"time"
 
@@ -14,8 +13,8 @@ import (
 //AuthenticationAgent Authenticates with master
 type AuthenticationAgent struct {
 	MasterConfiguration *MasterConfiguration
-	Tags                *map[string]string
-	ClientHTTP          *common.ClientHTTPPoster
+	Tags                *AgentTags
+	ClientHTTP          common.ClientHTTPPoster
 	Ctx                 context.Context
 
 	//Frequency on which the agent authenticates to master
@@ -26,12 +25,15 @@ type AuthenticationAgent struct {
 func (agent *AuthenticationAgent) generateJWT() string {
 	// Create a new token object, specifying signing method and the claims
 	// you would like it to contain.
-	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
-		"agent-tags": agent.Tags,
-	})
+	token := jwt.NewWithClaims(
+		jwt.SigningMethodHS256,
+		jwt.MapClaims{
+			"agent-tags": agent.Tags,
+		},
+	)
 
 	// Sign and get the complete encoded token as a string using the secret
-	tokenString, err := token.SignedString(agent.MasterConfiguration.Secret)
+	tokenString, err := token.SignedString([]byte(agent.MasterConfiguration.Secret))
 
 	if err != nil {
 		log.WithFields(log.Fields{
@@ -47,15 +49,12 @@ func (agent *AuthenticationAgent) generateJWT() string {
 func (agent *AuthenticationAgent) Authenticate() error {
 	jwt := agent.generateJWT()
 
-	// https://medium.com/@nate510/don-t-use-go-s-default-http-client-4804cb19f779
-	client := http.Client{Timeout: 5}
-
 	ticker := time.NewTicker(agent.Frequency)
 
 	for {
 		select {
 		case <-ticker.C:
-			resp, err := client.Post(
+			resp, err := agent.ClientHTTP.Post(
 				agent.MasterConfiguration.Host,
 				"application/jwt",
 				strings.NewReader(jwt),

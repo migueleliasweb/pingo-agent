@@ -8,18 +8,19 @@ import (
 )
 
 func handleUpdateConfigurationRequest(context echo.Context, globalConf *GlobalAgentsConfiguration) error {
-	// config := context.Get("global_configuration").(map[string]map[string]string)
+	bindErr := context.Bind(globalConf)
 
-	receivedConfig := make(GlobalAgentsConfiguration)
-
-	context.Bind(receivedConfig)
-
-	// globalConf = receivedConfig
-
-	log.WithFields(log.Fields{
-		"type":  "update-configuration",
-		"error": false,
-	}).Debug("Configuration updated.")
+	if bindErr != nil {
+		log.WithFields(log.Fields{
+			"type":  "update-configuration-unmarshall-payload",
+			"error": true,
+		}).Debug(bindErr)
+	} else {
+		log.WithFields(log.Fields{
+			"type":  "update-configuration",
+			"error": false,
+		}).Debug("Configuration updated.")
+	}
 
 	return context.JSON(http.StatusOK, map[string]string{
 		"updated": "true",

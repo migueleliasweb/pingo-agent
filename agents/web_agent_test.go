@@ -17,7 +17,7 @@ func getFakeUpdateCtx(method string, uri string, body string) echo.Context {
 	)
 
 	req.Header = map[string][]string{
-		"Content-type": {"application/json"},
+		"Content-Type": {echo.MIMEApplicationJSON},
 	}
 
 	rec := httptest.NewRecorder()
@@ -28,13 +28,33 @@ func getFakeUpdateCtx(method string, uri string, body string) echo.Context {
 
 func TestWebHandle(t *testing.T) {
 	sentConfiguration := `
-        a
-        a
+        {
+            "http": {
+                "target": "www.google.com",
+                "timeout": 10
+            }
+        }
     `
 
-	globalConf := make(GlobalAgentsConfiguration)
-
+	globalConf := GlobalAgentsConfiguration{}
 	ctx := getFakeUpdateCtx("POST", "/foo", sentConfiguration)
 
 	handleUpdateConfigurationRequest(ctx, &globalConf)
+
+	if len(globalConf) == 0 {
+		t.Error("Global configuration is empty.")
+	}
+
+	//I really tried to use DeepEqual but I couldn't make it to work
+	// if reflect.DeepEqual(globalConf, expectedGlobalConf) {
+	// 	t.Error("Actual configuration differs from expected.")
+	// }
+
+	if globalConf["http"]["target"] != "www.google.com" {
+		t.Error("Error on configuration target.")
+	}
+
+	if globalConf["http"]["timeout"].(float64) != 10 {
+		t.Error("Error on configuration timeout.")
+	}
 }

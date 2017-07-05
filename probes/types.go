@@ -4,7 +4,7 @@ import "time"
 
 //Probe Interface for all Probes
 type Probe interface {
-	Execute() (uint8, error)
+	Execute() (time.Duration, error)
 }
 
 //ProbeConfig Configuration for all Probes

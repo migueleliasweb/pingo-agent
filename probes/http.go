@@ -16,10 +16,10 @@ type HTTPProbe struct {
 }
 
 //Execute Executes HTTPProbe
-func (probe *HTTPProbe) Execute() (uint8, error) {
+func (probe *HTTPProbe) Execute() (time.Duration, error) {
 	startTime := time.Now()
 	_, err := probe.httpClient.Get(probe.config.Target)
-	duration := uint8(time.Now().Sub(startTime) / time.Nanosecond)
+	duration := time.Duration(time.Now().Sub(startTime) / time.Nanosecond)
 
 	return duration, err
 }

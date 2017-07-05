@@ -39,7 +39,11 @@ func TestWebHandle(t *testing.T) {
 	globalConf := GlobalAgentsConfiguration{}
 	ctx := getFakeUpdateCtx("POST", "/foo", sentConfiguration)
 
-	handleUpdateConfigurationRequest(ctx, &globalConf)
+	ctx.Set("global-configuration", &globalConf)
+
+	wa := WebAgent{}
+
+	wa.handleUpdateConfigurationRequest(ctx)
 
 	if len(globalConf) == 0 {
 		t.Error("Global configuration is empty.")

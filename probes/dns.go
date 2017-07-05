@@ -7,15 +7,15 @@ import (
 
 //DNSProbe Probe for DNS
 type DNSProbe struct {
-	config     ProbeConfig
-	LookupHost func(string) ([]string, error)
+	config         ProbeConfig
+	lookupHostFunc func(string) ([]string, error)
 }
 
 //Execute DNS probing
-func (probe *DNSProbe) Execute() (uint8, error) {
+func (probe *DNSProbe) Execute() (time.Duration, error) {
 	startTime := time.Now()
-	_, err := probe.LookupHost(probe.config.Target)
-	duration := uint8(time.Now().Sub(startTime) / time.Nanosecond)
+	_, err := probe.lookupHostFunc(probe.config.Target)
+	duration := time.Duration(time.Now().Sub(startTime) / time.Nanosecond)
 
 	return duration, err
 }
@@ -23,8 +23,8 @@ func (probe *DNSProbe) Execute() (uint8, error) {
 //NewDNSProbe Returns new DNSProbe instance
 func NewDNSProbe(config ProbeConfig) *DNSProbe {
 	dnsProbe := DNSProbe{
-		config:     config,
-		LookupHost: net.LookupHost,
+		config:         config,
+		lookupHostFunc: net.LookupHost,
 	}
 
 	return &dnsProbe

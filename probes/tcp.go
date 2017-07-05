@@ -12,7 +12,7 @@ type TCPProbe struct {
 }
 
 //Execute Executes TCP probing
-func (probe *TCPProbe) Execute() (uint8, error) {
+func (probe TCPProbe) Execute() (time.Duration, error) {
 	startTime := time.Now()
 	conn, err := probe.DialTimeout(
 		"tcp",
@@ -20,12 +20,21 @@ func (probe *TCPProbe) Execute() (uint8, error) {
 		probe.config.Timeout,
 	)
 
+	defer func() {
+		// not sure why this is needed
+		//apparentely just some types of connections
+		//implement the Close method
+		switch conn.(type) {
+		case net.Conn:
+			conn.Close()
+		}
+	}()
+
 	if err != nil {
-		return uint8(0), err
+		return time.Duration(0), err
 	}
 
-	duration := uint8(time.Since(startTime) / time.Nanosecond)
-	conn.Close()
+	duration := time.Duration(time.Since(startTime) / time.Nanosecond)
 
 	return duration, err
 }
